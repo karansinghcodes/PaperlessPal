@@ -6,4 +6,4 @@ import { verifyCode } from "../controller/verifyCode";
 export const router: Router = express.Router();
 
 router.post("/sign-up", signUp);
-router.get("/verify-code", verifyCode);
+router.post("/verify-code", verifyCode);
