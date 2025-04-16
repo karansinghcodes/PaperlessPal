@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { signUpSchema } from "../schemas/signUpSchema";
+import { signUpSchema } from "../../schemas/signUpSchema";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { saltNumber } from "../config/config";
-import { sendVerificationEmail } from "../utils/resend";
+import { saltNumber } from "../../config/config";
+import { sendVerificationEmail } from "../../utils/resend";
 
 const prisma = new PrismaClient();
 

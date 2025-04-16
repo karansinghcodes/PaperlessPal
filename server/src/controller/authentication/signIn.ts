@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { signInSchema } from "../schemas/signInSchema";
+import { signInSchema } from "../../schemas/signInSchema";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
@@ -30,24 +30,21 @@ export const signIn = async (req: Request, res: Response) => {
             };
             res.status(200).json({ user, success: true });
           } else {
-            res.status(400).json({ message: "Wrong password", success: false });
+            res.status(400).json({ success: false });
           }
         } else {
-           res
-            .status(401)
-            .json({ message: "User is not verified", success: false });
+          res.status(401).json({ success: false });
         }
       } else {
         res.status(409).json({
-          message: "User does not exists with this email",
           success: false,
         });
       }
     } else {
-      res.status(400).json({ message: "Invalid data sent", success: false });
+      res.status(400).json({ success: false });
     }
   } catch (error) {
     console.error("Error verifying user", error);
-    res.status(500).json({ message: "Internal server error", success: false });
+    res.status(500).json({ success: false });
   }
 };

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { verifyCodeSchema } from "../schemas/verifyCodeSchema";
+import { verifyCodeSchema } from "../../schemas/verifyCodeSchema";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();

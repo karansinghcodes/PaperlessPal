@@ -1,8 +1,8 @@
 import { Router } from "express";
 import express from "express";
-import { signUp } from "../controller/signUp";
-import { verifyCode } from "../controller/verifyCode";
-import { signIn } from "../controller/signIn";
+import { signUp } from "../controller/authentication/signUp";
+import { verifyCode } from "../controller/authentication/verifyCode";
+import { signIn } from "../controller/authentication/signIn";
 
 
 export const router: Router = express.Router();
