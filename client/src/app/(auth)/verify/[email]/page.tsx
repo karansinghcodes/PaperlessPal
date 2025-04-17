@@ -14,11 +14,12 @@ export default function VerifyCode() {
     const params = useParams<{ email: string }>();
     const email = decodeURIComponent(params.email);
 
-    const [verifyCode, setVerifyCode] = useState("");
+    const [verifyCode, setVerifyCode] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleVerifyCode = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setVerifyCode(e.target.value);
+
+        setVerifyCode(+e.target.value);
     }
 
     const checkVerifyCOde = async () => {

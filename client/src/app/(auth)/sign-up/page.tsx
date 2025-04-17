@@ -18,7 +18,8 @@ export default function SignUp() {
 
   const { register, handleSubmit } = useForm<z.infer<typeof signUpSchema>>({
     defaultValues: {
-      fullName: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       businessName: "",
@@ -76,15 +77,28 @@ export default function SignUp() {
         <div>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
             <div>
-              <Label htmlFor="fullName" className="mb-1 text-sm font-medium text-slate-700">
-                Full Name
+              <Label htmlFor="firestName" className="mb-1 text-sm font-medium text-slate-700">
+                First Name
               </Label>
               <Input
                 type="text"
-                {...register("fullName")}
-                id="fullName"
+                {...register("firstName")}
+                id="firstName"
                 className="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300 placeholder-slate-400"
-                placeholder="Enter your name"
+                placeholder="Enter your first name"
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="fullName" className="mb-1 text-sm font-medium text-slate-700">
+                Last Name
+              </Label>
+              <Input
+                type="text"
+                {...register("lastName")}
+                id="lastName"
+                className="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300 placeholder-slate-400"
+                placeholder="Enter your last name"
                 required
               />
             </div>
