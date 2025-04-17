@@ -10,23 +10,72 @@ datasource db {
 }
 
 
+
+
 model User {
-  
-  id String @id @default(uuid())
-  fullName String 
+
+  userId Int @id @default(autoincrement()) //Primary key
+  firstName String 
+  lastName String
   email String @unique
   password String
   isUserVerified Boolean @default(false)
-  verifyCode String 
-  verifyCodeExpiry DateTime
+  verifyCode Int
+  verifyCodeExpiry DateTime 
+  companyName String?
+  companyAddress String?
+  phoneNumber String?
   createdAt DateTime @default(now())
 
-  businessName String?
-  businessAddress String?
-  phoneNumber String?
-
+  invoices Invoice[]  //One user can have multiple invoices
+  clients Client[]   //One user can have multiple clients
+  
 
 }
 
+model Client {
+  clientId Int @id @default(autoincrement()) //Primary key
+  userId Int 
+  name String
+  address String
+  email String @unique
+  phoneNumber String
+
+
+ //Relations
+  user User @relation(fields:[userId],references:[userId])
+  invoice Invoice[] //One client can have multiple invoice
+
+}
+
+
+model Invoice {
+  invoiceId     Int      @id @default(autoincrement())
+  userId        Int
+  clientId      Int
+  invoiceNumber String
+  issueDate     DateTime
+  dueDate       DateTime
+  status        String   @default("pending")
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [userId])
+  client Client @relation(fields: [clientId], references: [clientId])
+  items  Item[]
+}
+
+
+model Item {
+  itemId Int @id @default(autoincrement()) //Primary key
+  invoiceId Int 
+  name String
+  description String
+  quantity Int
+  unitPrice Decimal
+  totalPrice Decimal
+  
+  //Relations
+   invoice Invoice @relation(fields:[invoiceId],references:[invoiceId])
+}
 
 

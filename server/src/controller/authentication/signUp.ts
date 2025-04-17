@@ -23,17 +23,15 @@ export const signUp = async (req: Request, res: Response) => {
 
       if (userExist) {
         if (userExist.isUserVerified) {
-          res
-            .status(409)
-            .json({
-              message: "User already exists with this email",
-              success: false,
-            });
+          res.status(409).json({
+            message: "User already exists with this email",
+            success: false,
+          });
         } else {
           const hashedPassword = await bcrypt.hash(user.password, 10);
           const verifyCodeExpiry = new Date(Date.now() + 3600000);
 
-          const updateUser = await prisma.user.update({
+          await prisma.user.update({
             where: { id: userExist.id },
             data: {
               password: hashedPassword,
@@ -51,7 +49,7 @@ export const signUp = async (req: Request, res: Response) => {
         user.verifyCode = verifyCode;
         user.verifyCodeExpiry = expiryDate;
 
-        const newUser = await prisma.user.create({
+        await prisma.user.create({
           data: user,
         });
       }
@@ -68,12 +66,10 @@ export const signUp = async (req: Request, res: Response) => {
           success: false,
         });
       } else {
-        res
-          .status(201)
-          .json({
-            message: "User registered successfully. Please verify your email",
-            success: true,
-          });
+        res.status(201).json({
+          message: "User registered successfully. Please verify your email",
+          success: true,
+        });
       }
     } else {
       res.status(400).json({ message: "Invalid data sent", success: false });
