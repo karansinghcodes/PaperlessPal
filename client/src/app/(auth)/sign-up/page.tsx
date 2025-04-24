@@ -9,12 +9,16 @@ import LoadingIcon from "@/components/custom/Loader";
 import { useState } from "react";
 import { baseUrl } from "@/configs/config";
 import { toast } from "sonner";
+import { Eye } from 'lucide-react';
+import { EyeOff } from 'lucide-react';
 import { useRouter } from "next/navigation";
+
 
 export default function SignUp() {
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [seePassword, setSeePassword] = useState<boolean>(false);
 
   const { register, handleSubmit } = useForm<z.infer<typeof signUpSchema>>({
     defaultValues: {
@@ -22,9 +26,7 @@ export default function SignUp() {
       lastName: "",
       email: "",
       password: "",
-      businessName: "",
-      businessAddress: "",
-      phoneNumber: "",
+
     },
   });
 
@@ -47,9 +49,7 @@ export default function SignUp() {
 
       if (resData.success) {
         toast.success(resData.message);
-        setTimeout(() => {
-          router.push(`/verify/${data.email}`);
-        }, 3000);
+        router.push(`/verify/${data.email}`);
 
       }
       else {
@@ -68,8 +68,8 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex justify-center items-center">
-      <div className="flex flex-col gap-8 w-full max-w-md p-8 bg-white rounded-xl shadow-lg border border-slate-200">
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex justify-center items-center ">
+      <div className="flex flex-col gap-8 w-full  max-w-md p-8  bg-white rounded-xl shadow-lg border border-slate-200">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-slate-800">Create an Account</h2>
           <p className="text-slate-600 mt-2">Start managing your invoices today</p>
@@ -77,7 +77,7 @@ export default function SignUp() {
         <div>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
             <div>
-              <Label htmlFor="firestName" className="mb-1 text-sm font-medium text-slate-700">
+              <Label htmlFor="firstName" className="mb-1 text-sm font-medium text-slate-700">
                 First Name
               </Label>
               <Input
@@ -90,7 +90,7 @@ export default function SignUp() {
               />
             </div>
             <div>
-              <Label htmlFor="fullName" className="mb-1 text-sm font-medium text-slate-700">
+              <Label htmlFor="lastName" className="mb-1 text-sm font-medium text-slate-700">
                 Last Name
               </Label>
               <Input
@@ -106,6 +106,7 @@ export default function SignUp() {
               <Label htmlFor="email" className="mb-1 text-sm font-medium text-slate-700">
                 Email
               </Label>
+
               <Input
                 type="email"
                 {...register("email")}
@@ -114,55 +115,29 @@ export default function SignUp() {
                 placeholder="Enter your email"
                 required
               />
+
             </div>
             <div>
               <Label htmlFor="password" className="mb-1 text-sm font-medium text-slate-700">
                 Password
               </Label>
-              <Input
-                type="password"
-                {...register("password")}
-                id="password"
-                className="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300 placeholder-slate-400"
-                placeholder="Create a password"
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="businessName" className="mb-1 text-sm font-medium text-slate-700">
-                Business Name (optional)
-              </Label>
-              <Input
-                type="text"
-                {...register("businessName")}
-                id="businessName"
-                className="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300 placeholder-slate-400"
-                placeholder="Your business name"
-              />
-            </div>
-            <div>
-              <Label htmlFor="businessAddress" className="mb-1 text-sm font-medium text-slate-700">
-                Business Address (optional)
-              </Label>
-              <Input
-                type="text"
-                {...register("businessAddress")}
-                id="businessAddress"
-                className="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300 placeholder-slate-400"
-                placeholder="Your business address"
-              />
-            </div>
-            <div>
-              <Label htmlFor="phoneNumber" className="mb-1 text-sm font-medium text-slate-700">
-                Phone Number (optional)
-              </Label>
-              <Input
-                type="text"
-                {...register("phoneNumber")}
-                id="phoneNumber"
-                className="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300 placeholder-slate-400"
-                placeholder="Your phone number"
-              />
+              <div className="flex items-center bg-white border border-slate-300 rounded-lg focus-within:ring-2 focus-within:ring-slate-300 focus-within:border-transparent transition-all duration-300">
+                <Input
+                  type={seePassword ? "text" : "password"}
+                  {...register("password")}
+                  id="password"
+                  className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
+                  placeholder="Create a password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setSeePassword(!seePassword)}
+                  className="p-2 text-slate-500 hover:text-slate-700 focus:outline-none"
+                >
+                  {seePassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
             </div>
             <div className="mt-2">
               <Button

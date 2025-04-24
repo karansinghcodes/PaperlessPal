@@ -11,10 +11,5 @@ export const signUpSchema = z.object({
     .regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
       "Should contain at least one upper case, one lower case and one number"
-    ),
-
-  //optional
-  businessName: z.optional(z.string()),
-  businessAddress: z.optional(z.string()),
-  phoneNumber: z.optional(z.string()),
+    )
 });

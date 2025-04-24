@@ -23,10 +23,11 @@ export const signIn = async (req: Request, res: Response) => {
           );
           if (isPasswordCorrect) {
             const user = {
-              id: userExist.id,
+              id: userExist.userId,
               email: userExist.email,
               isUserVerified: userExist.isUserVerified,
-              fullName: userExist.fullName,
+              firstName: userExist.firstName,
+              lastName:userExist.lastName
             };
             res.status(200).json({ user, success: true });
           } else {

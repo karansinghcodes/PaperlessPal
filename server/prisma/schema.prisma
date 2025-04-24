@@ -20,7 +20,7 @@ model User {
   email String @unique
   password String
   isUserVerified Boolean @default(false)
-  verifyCode Int
+  verifyCode String
   verifyCodeExpiry DateTime 
   companyName String?
   companyAddress String?

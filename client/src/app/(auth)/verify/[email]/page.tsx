@@ -14,12 +14,12 @@ export default function VerifyCode() {
     const params = useParams<{ email: string }>();
     const email = decodeURIComponent(params.email);
 
-    const [verifyCode, setVerifyCode] = useState<number>(0);
+    const [verifyCode, setVerifyCode] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
 
     const handleVerifyCode = (e: React.ChangeEvent<HTMLInputElement>) => {
 
-        setVerifyCode(+e.target.value);
+        setVerifyCode(e.target.value);
     }
 
     const checkVerifyCOde = async () => {
@@ -39,9 +39,7 @@ export default function VerifyCode() {
 
             if (resdata.success) {
                 toast.success(resdata.message);
-                setTimeout(() => {
-                    router.push("/sign-in")
-                }, 3000);
+                router.push("/sign-in")
             }
             else {
                 toast.error(resdata.message);

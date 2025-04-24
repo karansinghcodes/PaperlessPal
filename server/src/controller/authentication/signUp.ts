@@ -10,7 +10,6 @@ const prisma = new PrismaClient();
 export const signUp = async (req: Request, res: Response) => {
   try {
     const user = req.body;
-
     const requestValidation = signUpSchema.safeParse(user);
 
     if (requestValidation.success) {
@@ -32,7 +31,7 @@ export const signUp = async (req: Request, res: Response) => {
           const verifyCodeExpiry = new Date(Date.now() + 3600000);
 
           await prisma.user.update({
-            where: { id: userExist.id },
+            where: { userId: userExist.userId },
             data: {
               password: hashedPassword,
               verifyCode: verifyCode,
