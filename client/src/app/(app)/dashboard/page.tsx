@@ -8,7 +8,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { ArrowDownRight, ArrowDownToLine, ArrowUpRight, Check, CreditCard, Eye, FileText, HandCoins, Plus, Users, Users2 } from "lucide-react";
+import { ArrowDownRight, ArrowDownToLine, ArrowUpRight, Calendar, Check, CreditCard, Eye, FileText, HandCoins, Plus, Users, Users2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -32,10 +32,6 @@ import { useState } from "react";
 import clsx from "clsx";
 
 
-
-
-
-
 export default function () {
 
     const TabsItem = [
@@ -51,12 +47,12 @@ export default function () {
     ]
     const quickButtons = [
         {
-            id:'Invoice',name:"Create New Invoice"
+            id: 'Invoice', name: "Create New Invoice"
         },
         {
-            id:'Clients',name:"Clients",
-        },{
-            id:'Report',name:"Generate Report"
+            id: 'Clients', name: "Clients",
+        }, {
+            id: 'Report', name: "Generate Report"
         }
     ]
 
@@ -73,13 +69,13 @@ export default function () {
                         <h1 className="text-2xl font-bold">Dashboard</h1>
                         <div className="flex gap-2">
                             <Select defaultValue="7">
-                                <SelectTrigger className="w-[180px] text-black text-sx font-normal bg-white">
+                                <SelectTrigger className="w-[200px] text-black text-sx font-normal bg-white">
                                     <SelectValue placeholder="Select Date" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="7">Last 7 days</SelectItem>
-                                    <SelectItem value="30">Last 30 days</SelectItem>
-                                    <SelectItem value="90">Last 90 days</SelectItem>
+                                    <SelectItem value="7"> <Calendar /> Last 7 days</SelectItem>
+                                    <SelectItem value="30"><Calendar /> Last 30 days</SelectItem>
+                                    <SelectItem value="90"><Calendar /> Last 90 days</SelectItem>
                                 </SelectContent>
                             </Select>
 
@@ -223,7 +219,7 @@ export default function () {
                                                             amount: "$2,450.00",
                                                             status: "Pending",
                                                             date: "Apr 10, 2023",
-                                                            statusColor: "amber",
+                                                            statusColor: "amerb",
                                                         },
                                                         {
                                                             id: "INV-003",
@@ -337,36 +333,36 @@ export default function () {
 
                                             <div className="space-y-4">
                                                 {[
-                                                   {
-                                                    title: "Invoice #INV-001 was paid",
-                                                    description: "Acme Inc. paid $1,200.00",
-                                                    time: "2 hours ago",
-                                                  },
-                                                  {
-                                                    title: "New client added",
-                                                    description: "Globex Corp. was added as a new client",
-                                                    time: "5 hours ago",
-                                                  },
-                                                  {
-                                                    title: "Invoice #INV-003 was sent",
-                                                    description: "Invoice sent to Stark Industries",
-                                                    time: "Yesterday",
-                                                  },
-                                                  {
-                                                    title: "Payment reminder sent",
-                                                    description: "Reminder sent to Wayne Enterprises",
-                                                    time: "2 days ago",
-                                                  },
+                                                    {
+                                                        title: "Invoice #INV-001 was paid",
+                                                        description: "Acme Inc. paid $1,200.00",
+                                                        time: "2 hours ago",
+                                                    },
+                                                    {
+                                                        title: "New client added",
+                                                        description: "Globex Corp. was added as a new client",
+                                                        time: "5 hours ago",
+                                                    },
+                                                    {
+                                                        title: "Invoice #INV-003 was sent",
+                                                        description: "Invoice sent to Stark Industries",
+                                                        time: "Yesterday",
+                                                    },
+                                                    {
+                                                        title: "Payment reminder sent",
+                                                        description: "Reminder sent to Wayne Enterprises",
+                                                        time: "2 days ago",
+                                                    },
                                                 ].map((activity) => (
                                                     <div className="flex border justify-between p-3 rounded-md hover:bg-slate-100" key={activity.title}>
-                                                         <div className="flex">
-                                                        <div className="rounded-full bg-emerald-100 p-2  mr-5">
-                                                            <FileText className="h-4 w-4 text-emerald-600" />
-                                                        </div>
-                                                        <div className="flex flex-col">
-                                                            <h4 className="text-sm font-normal text-slate-900">{activity.title}</h4>
-                                                            <p className="text-xs text-slate-500">{activity.description}</p>
-                                                        </div>
+                                                        <div className="flex">
+                                                            <div className="rounded-full bg-emerald-100 p-2  mr-5">
+                                                                <FileText className="h-4 w-4 text-emerald-600" />
+                                                            </div>
+                                                            <div className="flex flex-col">
+                                                                <h4 className="text-sm font-normal text-slate-900">{activity.title}</h4>
+                                                                <p className="text-xs text-slate-500">{activity.description}</p>
+                                                            </div>
                                                         </div>
                                                         <div className="text-xs text-slate-500 ">{activity.time}</div>
 
