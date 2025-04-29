@@ -11,11 +11,13 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { signInSchema } from "@/schemas/singInSchema";
 import { signIn } from "next-auth/react";
+import { Eye, EyeOff } from "lucide-react";
 
 
 export default function SignIn() {
 
     const router = useRouter();
+    const [seePassword, setSeePassword] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const { register, handleSubmit } = useForm<z.infer<typeof signInSchema>>({
@@ -84,14 +86,28 @@ export default function SignIn() {
                             <Label htmlFor="password" className="mb-1 text-sm font-medium text-slate-700">
                                 Password
                             </Label>
-                            <Input
-                                type="password"
-                                {...register("password")}
-                                id="password"
-                                className="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300 placeholder-slate-400"
-                                placeholder="Create a password"
-                                required
-                            />
+                            <div className="flex items-center bg-white border border-slate-300 rounded-lg focus-within:ring-2 focus-within:ring-slate-300 focus-within:border-transparent transition-all duration-300">
+                                <Input
+                                    type={seePassword ? "text" : "password"}
+                                    {...register("password")}
+                                    id="password"
+                                    className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
+                                    placeholder="Create a password"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setSeePassword(!seePassword)}
+                                    className="p-2 text-slate-500 hover:text-slate-700 focus:outline-none"
+                                >
+                                    {seePassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                </button>
+                            </div>
+
+
+
+
+
                         </div>
 
 

@@ -45,18 +45,15 @@ export default function () {
             id: 'report', name: 'Report'
         }
     ]
-    const quickButtons = [
-        {
-            id: 'Invoice', name: "Create New Invoice"
-        },
-        {
-            id: 'Clients', name: "Clients",
-        }, {
-            id: 'Report', name: "Generate Report"
-        }
-    ]
+
+    const statusColorClasses: { [key: string]: string } = {
+        emerald: "bg-emerald-50 text-emerald-600 border-emerald-200",
+        amber: "bg-amber-50 text-amber-600 border-amber-200",
+        rose: "bg-rose-50 text-rose-600 border-rose-200",
+    };
 
     const [activeTab, setActiveTab] = useState<string>("overview");
+
 
 
     return (
@@ -126,9 +123,9 @@ export default function () {
                                     <Card className="rounded-sm px-2 py-5 flex flex-col justify-center">
                                         <CardHeader className="flex justify-between items-center">
                                             <CardTitle className="text-sm font-medium text-slate-500">
-                                                Profit
+                                                Pending Invoices
                                             </CardTitle>
-                                            <HandCoins className="h-4 w-4 text-slate-500" />
+                                            <FileText className="h-4 w-4 text-slate-500" />
                                         </CardHeader>
                                         <CardContent>
                                             <div className="text-2xl font-bold text-slate-900">
@@ -143,7 +140,7 @@ export default function () {
                                     <Card className="rounded-sm px-2 py-5 flex flex-col justify-center">
                                         <CardHeader className="flex justify-between items-center">
                                             <CardTitle className="text-sm font-medium text-slate-500">
-                                                Clients
+                                                Total Clients
                                             </CardTitle>
                                             <Users2 className="h-4 w-4 text-slate-500" />
                                         </CardHeader>
@@ -160,13 +157,13 @@ export default function () {
                                     <Card className="rounded-sm px-2 py-5 flex flex-col justify-center">
                                         <CardHeader className="flex justify-between items-center">
                                             <CardTitle className="text-sm font-medium text-slate-500">
-                                                Total Revenue
+                                                Invoices Sent
                                             </CardTitle>
-                                            <CreditCard className="h-4 w-4 text-slate-500" />
+                                            <FileText className="h-4 w-4 text-slate-500" />
                                         </CardHeader>
                                         <CardContent>
                                             <div className="text-2xl font-bold text-slate-900">
-                                                $24,780.00
+                                                18
                                             </div>
                                             <div className="flex items-center text-xs text-rose-500 mt-1">
                                                 <ArrowDownRight className="mr-1 h-3 w-3" />
@@ -219,7 +216,7 @@ export default function () {
                                                             amount: "$2,450.00",
                                                             status: "Pending",
                                                             date: "Apr 10, 2023",
-                                                            statusColor: "amerb",
+                                                            statusColor: "amber",
                                                         },
                                                         {
                                                             id: "INV-003",
@@ -239,11 +236,12 @@ export default function () {
                                                         },
                                                         {
                                                             id: "INV-005",
-                                                            client: "Umbrella Corp.",
+                                                            client: "Umbrella Corp",
                                                             amount: "$2,500.00",
                                                             status: "Pending",
                                                             date: "Mar 25, 2023",
                                                             statusColor: "amber",
+
                                                         },].map((invoice) => (
                                                             <tr key={invoice.id} className="border-b border-slate-100 hover:bg-slate-50">
                                                                 <td className="py-3 pl-4">
@@ -260,7 +258,7 @@ export default function () {
 
                                                                     <Badge
                                                                         variant="outline"
-                                                                        className={`bg-${invoice.statusColor}-50 text-${invoice.statusColor}-600 border-${invoice.statusColor}-200`}
+                                                                        className={statusColorClasses[invoice.statusColor]}
                                                                     >
                                                                         {invoice.status}
                                                                     </Badge>

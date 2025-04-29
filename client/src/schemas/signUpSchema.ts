@@ -1,8 +1,15 @@
 import z from "zod";
 
 export const signUpSchema = z.object({
-  firstName: z.string().trim(),
-  lastName: z.string().trim(),
+  firstName: z
+    .string()
+    .trim()
+    .regex(/^[A-Za-z\s'-]+$/, "Can't contain numbers or special characters"),
+  lastName: z
+    .string()
+    .trim()
+    .regex(/^[A-Za-z\s'-]+$/, "Can't contain numbers or special characters"),
+    
   email: z.string().email("Invalid email address"),
   password: z
     .string()
@@ -11,5 +18,5 @@ export const signUpSchema = z.object({
     .regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
       "Should contain at least one upper case, one lower case and one number"
-    )
+    ),
 });

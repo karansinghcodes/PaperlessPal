@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Eye } from 'lucide-react';
 import { EyeOff } from 'lucide-react';
 import { useRouter } from "next/navigation";
+import { zodResolver } from '@hookform/resolvers/zod';
 
 
 export default function SignUp() {
@@ -20,7 +21,8 @@ export default function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
   const [seePassword, setSeePassword] = useState<boolean>(false);
 
-  const { register, handleSubmit } = useForm<z.infer<typeof signUpSchema>>({
+  const { register, handleSubmit, formState: { errors } } = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -29,6 +31,7 @@ export default function SignUp() {
 
     },
   });
+
 
   const onSubmit: SubmitHandler<z.infer<typeof signUpSchema>> = async (
     data
@@ -88,6 +91,13 @@ export default function SignUp() {
                 placeholder="Enter your first name"
                 required
               />
+              {errors.firstName && (
+                <p className="text-sm text-rose-500 mt-1">
+                  {errors.firstName.message}
+                </p>
+
+              )}
+
             </div>
             <div>
               <Label htmlFor="lastName" className="mb-1 text-sm font-medium text-slate-700">
@@ -101,6 +111,13 @@ export default function SignUp() {
                 placeholder="Enter your last name"
                 required
               />
+              {errors.firstName && (
+                <p className="text-sm text-rose-500 mt-1">
+                  {errors.firstName.message}
+                </p>
+
+              )}
+
             </div>
             <div>
               <Label htmlFor="email" className="mb-1 text-sm font-medium text-slate-700">
@@ -115,6 +132,13 @@ export default function SignUp() {
                 placeholder="Enter your email"
                 required
               />
+              {errors.firstName && (
+                <p className="text-sm text-rose-500 mt-1">
+                  {errors.firstName.message}
+                </p>
+
+              )}
+
 
             </div>
             <div>
@@ -130,6 +154,9 @@ export default function SignUp() {
                   placeholder="Create a password"
                   required
                 />
+
+
+
                 <button
                   type="button"
                   onClick={() => setSeePassword(!seePassword)}
@@ -137,6 +164,12 @@ export default function SignUp() {
                 >
                   {seePassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
+                {errors.firstName && (
+                  <p className="text-sm text-rose-500 mt-1">
+                    {errors.firstName.message}
+                  </p>
+
+                )}
               </div>
             </div>
             <div className="mt-2">
