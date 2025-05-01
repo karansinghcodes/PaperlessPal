@@ -1,13 +1,15 @@
 import { Request, Response } from "express";
-import { createClientSchema } from "../../schemas/createClientSchema";
-
+import { createClientSchema } from "../../../schemas/createClientSchema";
+import { response } from "../../../utils/response/response";
 import { PrismaClient } from "@prisma/client";
+import { RequestWithUser } from "../../../middleware/middleware";
 
 const prisma = new PrismaClient();
 
 export const createClient = async (req: Request, res: Response) => {
   try {
     const clientData = req.body;
+    const user = req.params;
 
     const requestValidation = createClientSchema.safeParse(clientData);
 
@@ -19,23 +21,21 @@ export const createClient = async (req: Request, res: Response) => {
       });
 
       if (clientExists) {
-        res
-          .status(400)
-          .json({ message: "Client already exists", success: false });
+        response.error(res, "Client already exists", 400);
       } else {
+        clientData.userId = user.userId;
+
         await prisma.client.create({
           data: clientData,
         });
 
-        res
-          .status(201)
-          .json({ message: "Client created successfully", success: true });
+        response.ok(res, "Client successfully created", 201);
       }
     } else {
-      res.status(400).json({ message: "Invalid data sent", success: false });
+      response.error(res, "Invalid data send", 400);
     }
   } catch (error: any) {
     console.error("Error creating client", error.message);
-    res.status(500).json({ message: "Internal server error", success: false });
+    response.error(res, "Internal server error", 500);
   }
 };

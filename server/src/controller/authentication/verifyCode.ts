@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { verifyCodeSchema } from "../../schemas/verifyCodeSchema";
 import { PrismaClient } from "@prisma/client";
+import { response } from "../../utils/response/response";
 
 const prisma = new PrismaClient();
 
@@ -30,31 +31,23 @@ export const verifyCode = async (req: Request, res: Response) => {
             },
           });
 
-          res
-            .status(200)
-            .json({ message: "User verified successfully", success: true });
+          response.ok(res, "User verified successfully");
         } else if (!isCodeNotExpired) {
-          res.status(400).json({
-            message:
-              "Verification code has expired,please sign up again to get a new code",
-            success: false,
-          });
+          response.error(
+            res,
+            "Verification code has expired,please sign up again to get a new code"
+          );
         } else {
-          res.status(400).json({
-            message: "Verification code is incorrect",
-            success: false,
-          });
+          response.error(res, "Verification code is incorrect");
         }
       } else {
-        res
-          .status(400)
-          .json({ message: "No user exists with this email", success: false });
+        response.error(res, "No user exists with this email");
       }
     } else {
-      res.status(400).json({ message: "Invalid data sent", success: false });
+      response.error(res, "Invalid data sent");
     }
   } catch (error: any) {
     console.error("error verifying user", error.message);
-    res.status(500).json({ message: "Internal server error", success: false });
+    response.error(res, "Internal server error", 500);
   }
 };

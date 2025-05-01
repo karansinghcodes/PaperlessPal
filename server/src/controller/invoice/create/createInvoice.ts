@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createInvoiceSchema } from "../../schemas/createInvoiceSchema";
+import { createInvoiceSchema } from "../../../schemas/createInvoiceSchema";
 import { PrismaClient } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 
@@ -21,6 +21,27 @@ export const createInvoice = async (req: Request, res: Response) => {
       });
 
       const invoiceNumber = `INV-${invoiceCount + 1}`;
+      const invoiceItems = invoiceData.invoiceItemsDetail;
+
+      const subTotal = invoiceItems.reduce(
+        (
+          sum: number,
+          item: {
+            name: string;
+            description: string;
+            quantity: number;
+            unitPrice: Decimal;
+            totalPrice: Decimal;
+          }
+        ) => {
+          return sum + Number(item.totalPrice);
+        },
+        0
+      );
+      console.log(subTotal);
+      const subTotalAfterTax =
+        (invoiceData.taxPercent * subTotal) / 100 + subTotal;
+      console.log(subTotalAfterTax);
 
       const newInvoice = {
         userId: invoiceData.userId,
@@ -28,9 +49,10 @@ export const createInvoice = async (req: Request, res: Response) => {
         invoiceNumber: invoiceNumber,
         issueDate: invoiceData.issueDate,
         dueDate: invoiceData.dueDate,
+        taxPercent: invoiceData.taxPercent,
+        subTotal: subTotal,
+        subTotalAfterTax: subTotalAfterTax,
       };
-
-      const invoiceItems = invoiceData.invoiceItemsDetail;
 
       const invoice = await prisma.invoice.create({
         data: newInvoice,
@@ -42,6 +64,9 @@ export const createInvoice = async (req: Request, res: Response) => {
           quantity: number;
           unitPrice: Decimal;
           totalPrice: Decimal;
+          taxPercent: Decimal;
+          subTotal: Decimal;
+          subTotalAfterTax: Decimal;
         }) => ({
           ...item,
           invoiceId: invoice.invoiceId,

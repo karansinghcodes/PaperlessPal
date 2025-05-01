@@ -1,6 +1,8 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { NextAuthOptions } from "next-auth";
 import { baseUrl } from "@/configs/config";
+import jwt from "jsonwebtoken";
+import { JWT } from "next-auth/jwt";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -23,7 +25,7 @@ export const authOptions: NextAuthOptions = {
 
           const resdata = await res.json();
           if (resdata.success) {
-            const user = resdata.user;
+            const user = resdata.data;
 
             if (user) {
               return user;
@@ -42,10 +44,15 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
+  jwt: {
+    async encode({ token }) {
+      return jwt.sign(token as JWT, process.env.NEXTAUTH_SECRET as string);
+    },
+  },
   pages: {
     signIn: "/sign-in",
   },
-  secret: process.env.NEXT_AUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
 
   callbacks: {
     async jwt({ token, user }) {
@@ -55,6 +62,7 @@ export const authOptions: NextAuthOptions = {
         token.isUserVerified = user.isUserVerified;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
+        console.log(token);
       }
       return token;
     },

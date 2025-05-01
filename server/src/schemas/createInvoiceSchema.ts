@@ -8,5 +8,6 @@ export const createInvoiceSchema = z.object({
   clientId: z.number(),
   issueDate: z.date(),
   dueDate: z.date(),
+  taxPercent: z.number(),
   invoiceItemsDetail: invoiceItemsDetail,
 });

@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import { signUpSchema } from "../../schemas/signUpSchema";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { saltNumber } from "../../config/config";
 import { sendVerificationEmail } from "../../utils/resend";
+import { response } from "../../utils/response/response";
 
 const prisma = new PrismaClient();
 
@@ -22,10 +22,7 @@ export const signUp = async (req: Request, res: Response) => {
 
       if (userExist) {
         if (userExist.isUserVerified) {
-          res.status(409).json({
-            message: "User already exists with this email",
-            success: false,
-          });
+          response.error(res, "User already exists with this email", 409);
         } else {
           const hashedPassword = await bcrypt.hash(user.password, 10);
           const verifyCodeExpiry = new Date(Date.now() + 3600000);
@@ -60,22 +57,19 @@ export const signUp = async (req: Request, res: Response) => {
       );
 
       if (!emailResponse.success) {
-        res.status(400).json({
-          message: emailResponse.message,
-          success: false,
-        });
+        response.error(res, emailResponse.message);
       } else {
-        res.status(201).json({
-          message: "User registered successfully. Please verify your email",
-          success: true,
-        });
+        response.ok(
+          res,
+          "User registered successfully, please verify your email"
+        );
       }
     } else {
-      res.status(400).json({ message: "Invalid data sent", success: false });
+      response.error(res, "Invalid data sent");
     }
   } catch (error: any) {
     console.error("Error registering user:", error);
 
-    res.status(500).json({ message: "Internal Server Error", success: false });
+    response.error(res, "Interenal server error", 500);
   }
 };

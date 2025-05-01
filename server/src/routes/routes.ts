@@ -3,8 +3,9 @@ import express from "express";
 import { signUp } from "../controller/authentication/signUp";
 import { verifyCode } from "../controller/authentication/verifyCode";
 import { signIn } from "../controller/authentication/signIn";
-import { createInvoice } from "../controller/invoice/createInvoice";
-import { createClient } from "../controller/client/createClient";
+import { createInvoice } from "../controller/invoice/create/createInvoice";
+import { createClient } from "../controller/client/create/createClient";
+import { middleware } from "../middleware/middleware";
 
 export const router: Router = express.Router();
 
@@ -17,4 +18,8 @@ router.post("/verify-code", verifyCode);
 router.post("/create-invoice", createInvoice);
 
 //client
-router.post("/create-client",createClient);
+router.post(
+  "/create-client",
+  middleware as express.RequestHandler,
+  createClient
+);
