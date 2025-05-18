@@ -20,6 +20,5 @@ router.post("/create-invoice", createInvoice);
 //client
 router.post(
   "/create-client",
-  middleware as express.RequestHandler,
   createClient
 );

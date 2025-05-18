@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { createClientSchema } from "../../../schemas/createClientSchema";
 import { response } from "../../../utils/response/response";
 import { PrismaClient } from "@prisma/client";
-import { RequestWithUser } from "../../../middleware/middleware";
+
 
 const prisma = new PrismaClient();
 

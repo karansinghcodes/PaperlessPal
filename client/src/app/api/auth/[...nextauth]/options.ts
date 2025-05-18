@@ -1,8 +1,7 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { NextAuthOptions } from "next-auth";
 import { baseUrl } from "@/configs/config";
-import jwt from "jsonwebtoken";
-import { JWT } from "next-auth/jwt";
+import { encode } from "next-auth/jwt";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -44,36 +43,42 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
-  jwt: {
-    async encode({ token }) {
-      return jwt.sign(token as JWT, process.env.NEXTAUTH_SECRET as string);
-    },
-  },
   pages: {
     signIn: "/sign-in",
   },
   secret: process.env.NEXTAUTH_SECRET,
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user}) {
       if (user) {
         token.userId = user.userId;
         token.email = user.email;
         token.isUserVerified = user.isUserVerified;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
-        console.log(token);
       }
+
+    
       return token;
     },
     async session({ session, token }) {
       if (token) {
-        session.user.userId = token.userId;
-        session.user.email = token.email;
-        session.user.isUserVerified = token.isUserVerified;
-        session.user.firstName = token.firstName;
-        session.user.lastName = token.lastName;
+        session.user = {
+          userId: token.userId,
+          email: token.email,
+          isUserVerified: token.isUserVerified,
+          firstName: token.firstName,
+          lastName: token.lastName,
+        };
+
+        session.accessToken = await encode({
+          token,
+          secret: process.env.NEXTAUTH_SECRET!,
+        });
+
+        return session;
       }
+
       return session;
     },
   },

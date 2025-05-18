@@ -25,16 +25,13 @@ import z from "zod";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { baseUrl } from "@/configs/config";
+import { toast } from "sonner";
 
 export default function () {
 
 
-    const getToken = async () => {
-        const res = await fetch("/api/token");
-        const data = await res.json();
-        return data.token;
-
-    }
+    const { data: session } = useSession();
+    console.log(session);
 
 
     const countries = [
@@ -60,7 +57,7 @@ export default function () {
 
     const [loading, setLoading] = useState<boolean>(false);
 
-    const [streeAddress, setStreetAddress] = useState<string>("");
+    const [streetAddress, setStreetAddress] = useState<string>("");
     const [city, setCity] = useState<string>("");
     const [state, setState] = useState<string>("");
     const [postalCode, setPostalCode] = useState<number | null>(null);
@@ -80,27 +77,50 @@ export default function () {
         setPostalCode(zip);
     }
     const handleCountary = (value: string) => {
-        console.log(value)
+
         setCountary(value);
     }
 
     const generateAddress = () => {
-        const realAddress = `${streeAddress}, ${city}, ${state}, ${countary}, ${postalCode}`
+        const realAddress = `${streetAddress}, ${city}, ${state}, ${countary}, ${postalCode}`
+
         return realAddress;
     }
-
-    const [token, settoken] = useState("token");
 
     const onSubmit: SubmitHandler<z.infer<typeof clientSchema>> = async (
         data
     ) => {
         try {
             setLoading(true);
+            generateAddress();
 
-            const res = await fetch(`${baseUrl}`)
+            const newData = JSON.parse(JSON.stringify(data));
+            newData.userId = session?.user.userId;
 
-        } catch (error) {
 
+            const res = await fetch(`${baseUrl}create-client`, {
+                method: "POST",
+                body: JSON.stringify(newData),
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+
+            const result = await res.json();
+
+            if (result.success) {
+                toast.success(result.message);
+            }
+            else {
+                toast.error(result.message);
+            }
+
+
+        } catch (error: any) {
+            toast.error(error.message);
+
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -115,12 +135,7 @@ export default function () {
                     <ArrowLeft />
 
                 </Button>
-                <Button onClick={async () => {
-                    const data = await getToken();
-                    console.log(data)
-                    settoken(data);
 
-                }}>test</Button>
                 <h1 className="text-lg font-bold">Add New Client </h1>
 
             </div>
@@ -257,7 +272,7 @@ export default function () {
                                     <Label className="text-sm font-normal text-slate-700">
                                         Notes
                                     </Label>
-                                    <Textarea className="mt-1 h-8" {...register("addtionalNotes")} value={token} />
+                                    <Textarea className="mt-1 h-20" {...register("addtionalNotes")} placeholder="add any additional notes about this client..." />
                                 </div>
                             </div>
                         </CardContent>

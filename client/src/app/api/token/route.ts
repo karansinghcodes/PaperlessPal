@@ -9,7 +9,6 @@ export async function GET(req: NextRequest) {
   });
 
   if (token) {
-    
     return Response.json({
       success: true,
       token,

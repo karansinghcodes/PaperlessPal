@@ -24,7 +24,7 @@ export const verifyCode = async (req: Request, res: Response) => {
         const isCodeNotExpired = new Date(user.verifyCodeExpiry) > new Date();
 
         if (isCodeValid && isCodeNotExpired) {
-          const updateUser = await prisma.user.update({
+          await prisma.user.update({
             where: { email: email },
             data: {
               isUserVerified: true,

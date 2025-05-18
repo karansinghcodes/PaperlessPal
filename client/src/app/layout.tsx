@@ -26,16 +26,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-  <AuthProvider>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-      
+      <AuthProvider>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+
 
           {children}
           <Toaster position="bottom-right" richColors />
-       
-      </body>
+
+        </body>
       </AuthProvider>
 
     </html>

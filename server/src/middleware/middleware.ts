@@ -28,6 +28,7 @@ export const middleware = async (
   try {
     
     const decoded = jwt.verify(token, nextAuthSecret);
+    console.log(decoded)
    
     const { userId, isUserVerified, firstName, lastName, email } =
       decoded as JwtPayload;
