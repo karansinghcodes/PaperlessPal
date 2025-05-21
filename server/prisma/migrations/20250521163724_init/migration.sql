@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "User" (
-    "userId" SERIAL NOT NULL,
+    "userId" UUID NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -18,12 +18,13 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "Client" (
-    "clientId" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
-    "name" TEXT,
+    "clientId" UUID NOT NULL,
+    "userId" UUID NOT NULL,
+    "contactName" TEXT,
+    "companyName" TEXT NOT NULL,
     "address" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "status" BOOLEAN NOT NULL,
+    "status" BOOLEAN NOT NULL DEFAULT true,
     "phoneNumber" TEXT,
     "additionalNotes" TEXT,
 
@@ -32,9 +33,9 @@ CREATE TABLE "Client" (
 
 -- CreateTable
 CREATE TABLE "Invoice" (
-    "invoiceId" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
-    "clientId" INTEGER NOT NULL,
+    "invoiceId" UUID NOT NULL,
+    "userId" UUID NOT NULL,
+    "clientId" UUID NOT NULL,
     "invoiceNumber" TEXT NOT NULL,
     "issueDate" TIMESTAMP(3) NOT NULL,
     "dueDate" TIMESTAMP(3) NOT NULL,
@@ -48,8 +49,8 @@ CREATE TABLE "Invoice" (
 
 -- CreateTable
 CREATE TABLE "Item" (
-    "itemId" SERIAL NOT NULL,
-    "invoiceId" INTEGER NOT NULL,
+    "itemId" UUID NOT NULL,
+    "invoiceId" UUID NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,

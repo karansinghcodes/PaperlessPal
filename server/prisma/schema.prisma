@@ -1,5 +1,3 @@
-
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,81 +7,64 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-
-
 model User {
+  userId           String   @id @default(uuid()) @db.Uuid
+  firstName        String
+  lastName         String
+  email            String   @unique
+  password         String
+  isUserVerified   Boolean  @default(false)
+  verifyCode       String
+  verifyCodeExpiry DateTime
+  companyName      String?
+  companyAddress   String?
+  phoneNumber      String?
+  createdAt        DateTime @default(now())
 
-  userId Int @id @default(autoincrement()) //Primary key
-  firstName String 
-  lastName String
-  email String @unique
-  password String
-  isUserVerified Boolean @default(false)
-  verifyCode String
-  verifyCodeExpiry DateTime 
-  companyName String?
-  companyAddress String?
-  phoneNumber String?
-  createdAt DateTime @default(now())
-
-  invoices Invoice[]  //One user can have multiple invoices
-  clients Client[]   //One user can have multiple clients
-  
-
+  invoices Invoice[]
+  clients  Client[]
 }
 
 model Client {
-  clientId Int @id @default(autoincrement()) //Primary key
-  userId Int 
-  contactName String?
-  companyName String
-  address String
-  email String @unique
-  status Boolean @default(true)
-  phoneNumber String?
+  clientId        String  @id @default(uuid()) @db.Uuid
+  userId          String  @db.Uuid
+  contactName     String?
+  companyName     String
+  address         String
+  email           String  @unique
+  status          Boolean @default(true)
+  phoneNumber     String?
   additionalNotes String?
 
-
-
-
- //Relations
-  user User @relation(fields:[userId],references:[userId])
-  invoice Invoice[] //One client can have multiple invoice
-
+  user    User      @relation(fields: [userId], references: [userId])
+  invoice Invoice[]
 }
 
-
 model Invoice {
-  invoiceId     Int      @id @default(autoincrement())
-  userId        Int
-  clientId      Int
-  invoiceNumber String
-  issueDate     DateTime
-  dueDate       DateTime
-  status        String   @default("pending")
-  taxPercent Decimal
-  subTotal Decimal 
+  invoiceId        String   @id @default(uuid()) @db.Uuid
+  userId           String   @db.Uuid
+  clientId         String   @db.Uuid
+  invoiceNumber    String
+  issueDate        DateTime
+  dueDate          DateTime
+  status           String   @default("pending")
+  taxPercent       Decimal
+  subTotal         Decimal
   subTotalAfterTax Decimal
 
-  // Relations
   user   User   @relation(fields: [userId], references: [userId])
   client Client @relation(fields: [clientId], references: [clientId])
   items  Item[]
 }
 
-
 model Item {
-  itemId Int @id @default(autoincrement()) //Primary key
-  invoiceId Int 
-  name String
+  itemId      String  @id @default(uuid()) @db.Uuid
+  invoiceId   String  @db.Uuid
+  name        String
   description String
-  quantity Int
-  unitPrice Decimal
-  totalPrice Decimal
-  
-  //Relations
-   invoice Invoice @relation(fields:[invoiceId],references:[invoiceId])
+  quantity    Int
+  unitPrice   Decimal
+  totalPrice  Decimal
+
+  invoice Invoice @relation(fields: [invoiceId], references: [invoiceId])
 }
-
-

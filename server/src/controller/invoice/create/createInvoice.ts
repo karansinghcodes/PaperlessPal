@@ -3,12 +3,15 @@ import { createInvoiceSchema } from "../../../schemas/createInvoiceSchema";
 import { PrismaClient } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 import { router } from "../../..";
+import { middleware } from "../../../middleware/auth.middleware";
+import express from "express";
 
 const prisma = new PrismaClient();
 
 export const createInvoice = async (req: Request, res: Response) => {
   try {
     const invoiceData = req.body;
+    const user = req.params;
     invoiceData.issueDate = new Date(invoiceData.issueDate);
     invoiceData.dueDate = new Date(invoiceData.dueDate);
 
@@ -17,7 +20,7 @@ export const createInvoice = async (req: Request, res: Response) => {
     if (requestValidation.success) {
       const invoiceCount = await prisma.invoice.count({
         where: {
-          userId: invoiceData.userId,
+          userId: user.userId,
         },
       });
 
@@ -39,13 +42,12 @@ export const createInvoice = async (req: Request, res: Response) => {
         },
         0
       );
-      console.log(subTotal);
+
       const subTotalAfterTax =
         (invoiceData.taxPercent * subTotal) / 100 + subTotal;
-      console.log(subTotalAfterTax);
 
       const newInvoice = {
-        userId: invoiceData.userId,
+        userId: user.userId,
         clientId: invoiceData.clientId,
         invoiceNumber: invoiceNumber,
         issueDate: invoiceData.issueDate,
@@ -92,4 +94,8 @@ export const createInvoice = async (req: Request, res: Response) => {
   }
 };
 
-router.post("/create-invoice", createInvoice);
+router.post(
+  "/create-invoice",
+  middleware as express.RequestHandler,
+  createInvoice
+);
