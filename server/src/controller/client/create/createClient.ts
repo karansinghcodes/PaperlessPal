@@ -2,7 +2,9 @@ import { Request, Response } from "express";
 import { createClientSchema } from "../../../schemas/createClientSchema";
 import { response } from "../../../utils/response/response";
 import { PrismaClient } from "@prisma/client";
-
+import { router } from "../../..";
+import express from "express";
+import { middleware } from "../../../middleware/auth.middleware";
 
 const prisma = new PrismaClient();
 
@@ -24,7 +26,6 @@ export const createClient = async (req: Request, res: Response) => {
         response.error(res, "Client already exists", 400);
       } else {
         clientData.userId = user.userId;
-
         await prisma.client.create({
           data: clientData,
         });
@@ -39,3 +40,9 @@ export const createClient = async (req: Request, res: Response) => {
     response.error(res, "Internal server error", 500);
   }
 };
+
+router.post(
+  "/create-client",
+  middleware as express.RequestHandler,
+  createClient
+);

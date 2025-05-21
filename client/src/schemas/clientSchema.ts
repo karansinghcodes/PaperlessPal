@@ -6,6 +6,6 @@ export const clientSchema = z.object({
   address: z.string(),
   email: z.string().email(),
   phoneNumber: z.optional(z.string().min(10).max(10)),
-  status: z.string(),
-  addtionalNotes: z.string().max(100),
+  status: z.boolean(),
+  additionalNotes: z.string().max(100),
 });

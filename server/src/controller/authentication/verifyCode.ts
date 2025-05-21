@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { verifyCodeSchema } from "../../schemas/verifyCodeSchema";
 import { PrismaClient } from "@prisma/client";
 import { response } from "../../utils/response/response";
+import { router } from "../..";
 
 const prisma = new PrismaClient();
 
@@ -51,3 +52,5 @@ export const verifyCode = async (req: Request, res: Response) => {
     response.error(res, "Internal server error", 500);
   }
 };
+
+router.post("/verify-code", verifyCode);

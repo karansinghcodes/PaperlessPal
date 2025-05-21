@@ -2,7 +2,7 @@ import { Resend } from "resend";
 import ejs from "ejs";
 import fs from "fs";
 import path from "path";
-import { resendApiKey } from "../config/config";
+import { resendApiKey } from "../../config/config";
 
 interface ApiResponse {
   message: string;
@@ -16,7 +16,10 @@ export async function sendVerificationEmail(
   fullName: string,
   verifyCode: string
 ): Promise<ApiResponse> {
-  const templatePath = path.resolve(__dirname, "../../email/emailTemplate.ejs");
+  const templatePath = path.resolve(
+    __dirname,
+    "../../../email/emailTemplate.ejs"
+  );
   const template = fs.readFileSync(templatePath, "utf-8");
   const html = ejs.render(template, { fullName, verifyCode });
   try {

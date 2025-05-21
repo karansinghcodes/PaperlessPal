@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { nextAuthSecret } from "../config/config";
+import { jwtSecret } from "../config/config";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { response } from "../utils/response/response";
 
@@ -26,18 +26,16 @@ export const middleware = async (
   }
 
   try {
-    
-    const decoded = jwt.verify(token, nextAuthSecret);
-    console.log(decoded)
-   
+    const decoded = jwt.verify(token, jwtSecret);
+
     const { userId, isUserVerified, firstName, lastName, email } =
       decoded as JwtPayload;
 
     req.params = { userId, isUserVerified, firstName, lastName, email };
     next();
-  } catch (err:any) {
-    console.log(err.message)
-    
+  } catch (err: any) {
+    console.log(err.message);
+
     return response.error(res, "Invalid token", 401);
   }
 };

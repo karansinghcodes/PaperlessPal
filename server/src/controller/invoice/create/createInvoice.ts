@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { createInvoiceSchema } from "../../../schemas/createInvoiceSchema";
 import { PrismaClient } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
+import { router } from "../../..";
 
 const prisma = new PrismaClient();
 
@@ -90,3 +91,5 @@ export const createInvoice = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error", success: false });
   }
 };
+
+router.post("/create-invoice", createInvoice);

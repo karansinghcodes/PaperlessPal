@@ -36,10 +36,11 @@ model User {
 model Client {
   clientId Int @id @default(autoincrement()) //Primary key
   userId Int 
-  name String?
+  contactName String?
+  companyName String
   address String
   email String @unique
-  status Boolean 
+  status Boolean @default(true)
   phoneNumber String?
   additionalNotes String?
 

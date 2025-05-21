@@ -1,10 +1,11 @@
 import z from "zod";
 
 export const createClientSchema = z.object({
-  name: z.optional(z.string()),
+  contactName: z.optional(z.string()),
+  companyName: z.string(),
   address: z.string(),
   email: z.string().email(),
   phoneNumber: z.optional(z.string().min(10).max(10)),
-  status: z.string(),
-  addtionalNotes: z.optional(z.string().max(100))
+  status: z.boolean(),
+  additionalNotes: z.optional(z.string().max(100)),
 });

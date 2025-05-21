@@ -3,6 +3,9 @@ import { signInSchema } from "../../schemas/signInSchema";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { response } from "../../utils/response/response";
+import jwt from "jsonwebtoken";
+import { jwtSecret } from "../../config/config";
+import { router } from "../..";
 
 const primsa = new PrismaClient();
 
@@ -30,7 +33,13 @@ export const signIn = async (req: Request, res: Response) => {
               firstName: userExist.firstName,
               lastName: userExist.lastName,
             };
-            response.ok(res, "User successfully created", user);
+            const token = jwt.sign(user, jwtSecret);
+
+            const resData = {
+              user,
+              token,
+            };
+            response.ok(res, "User successfully created", resData);
           } else {
             response.error(res, "Incorrect password");
           }
@@ -48,3 +57,5 @@ export const signIn = async (req: Request, res: Response) => {
     response.error(res, "Internal server error");
   }
 };
+
+router.post("/sign-in", signIn);

@@ -6,7 +6,7 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "isUserVerified" BOOLEAN NOT NULL DEFAULT false,
-    "verifyCode" INTEGER NOT NULL,
+    "verifyCode" TEXT NOT NULL,
     "verifyCodeExpiry" TIMESTAMP(3) NOT NULL,
     "companyName" TEXT,
     "companyAddress" TEXT,
@@ -20,10 +20,12 @@ CREATE TABLE "User" (
 CREATE TABLE "Client" (
     "clientId" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
-    "name" TEXT NOT NULL,
+    "name" TEXT,
     "address" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "phoneNumber" TEXT NOT NULL,
+    "status" BOOLEAN NOT NULL,
+    "phoneNumber" TEXT,
+    "additionalNotes" TEXT,
 
     CONSTRAINT "Client_pkey" PRIMARY KEY ("clientId")
 );
@@ -37,6 +39,9 @@ CREATE TABLE "Invoice" (
     "issueDate" TIMESTAMP(3) NOT NULL,
     "dueDate" TIMESTAMP(3) NOT NULL,
     "status" TEXT NOT NULL DEFAULT 'pending',
+    "taxPercent" DECIMAL(65,30) NOT NULL,
+    "subTotal" DECIMAL(65,30) NOT NULL,
+    "subTotalAfterTax" DECIMAL(65,30) NOT NULL,
 
     CONSTRAINT "Invoice_pkey" PRIMARY KEY ("invoiceId")
 );

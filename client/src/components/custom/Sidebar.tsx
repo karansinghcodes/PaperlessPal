@@ -23,7 +23,7 @@ export default function () {
     ]
 
     return (
-        <div className="w-64 bg-white border-r flex flex-col border-slate-200 ">
+        <div className="w-75 bg-white border-r flex flex-col border-slate-200 ">
             <div className="flex items-center p-4 h-14 border-b border-slate-200 gap-2">
                 <div className=" bg-emerald-500 rounded-md p-1 flex items-center justify-center">
                     <FileText className='text-white w-5 h-5' />

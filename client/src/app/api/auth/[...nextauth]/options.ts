@@ -24,11 +24,12 @@ export const authOptions: NextAuthOptions = {
 
           const resdata = await res.json();
           if (resdata.success) {
-            const user = resdata.data;
+            const { user, token } = resdata.data;
 
-            if (user) {
-              return user;
-            }
+            return {
+              ...user,
+              accessToken: token,
+            };
             return null;
           } else {
             return null;
@@ -49,35 +50,29 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 
   callbacks: {
-    async jwt({ token, user}) {
+    async jwt({ token, user }) {
+   
       if (user) {
+        token.accessToken = user.accessToken;
         token.userId = user.userId;
         token.email = user.email;
-        token.isUserVerified = user.isUserVerified;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
+        token.isUserVerified = user.isUserVerified;
       }
 
-    
       return token;
     },
+
     async session({ session, token }) {
-      if (token) {
-        session.user = {
-          userId: token.userId,
-          email: token.email,
-          isUserVerified: token.isUserVerified,
-          firstName: token.firstName,
-          lastName: token.lastName,
-        };
-
-        session.accessToken = await encode({
-          token,
-          secret: process.env.NEXTAUTH_SECRET!,
-        });
-
-        return session;
-      }
+      session.user = {
+        userId: token.userId,
+        email: token.email,
+        firstName: token.firstName,
+        lastName: token.lastName,
+        isUserVerified: token.isUserVerified,
+      };
+      session.accessToken = token.accessToken;
 
       return session;
     },
