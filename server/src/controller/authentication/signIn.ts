@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import { response } from "../../utils/response/response";
 import jwt from "jsonwebtoken";
 import { jwtSecret } from "../../config/config";
-import { router } from "../..";
+
 
 const primsa = new PrismaClient();
 
@@ -58,4 +58,5 @@ export const signIn = async (req: Request, res: Response) => {
   }
 };
 
-router.post("/sign-in", signIn);
+
+

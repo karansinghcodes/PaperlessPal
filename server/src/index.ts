@@ -2,10 +2,9 @@ import express, { Application } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { portNumber } from "./config/config";
-import { Router } from "express";
+import { router } from "./routes/routes";
 
-export const app: Application = express();
-export const router: Router = express.Router();
+const app: Application = express();
 
 app.use(cors());
 app.use(bodyParser.json());

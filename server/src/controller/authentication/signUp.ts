@@ -4,7 +4,9 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { sendVerificationEmail } from "../../utils/sendVerificationEmail/resend";
 import { response } from "../../utils/response/response";
-import { router } from "../..";
+
+
+
 
 const prisma = new PrismaClient();
 
@@ -74,7 +76,3 @@ export const signUp = async (req: Request, res: Response) => {
     response.error(res, "Interenal server error", 500);
   }
 };
-
-
-
-router.post("/sign-up", signUp);

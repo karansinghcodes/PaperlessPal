@@ -19,5 +19,6 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.14.1",
     "prisma": "^6.8.2"
-  }
+  },
+  "scripts" : {    "start": "node --watch dist/index.js"}
 }

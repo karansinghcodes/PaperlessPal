@@ -2,9 +2,11 @@ import { Request, Response } from "express";
 import { createClientSchema } from "../../../schemas/createClientSchema";
 import { response } from "../../../utils/response/response";
 import { PrismaClient } from "@prisma/client";
-import { router } from "../../..";
-import express from "express";
+
 import { middleware } from "../../../middleware/auth.middleware";
+import express from "express"
+import { router } from "../../../routes/routes";
+
 
 const prisma = new PrismaClient();
 
@@ -30,7 +32,7 @@ export const createClient = async (req: Request, res: Response) => {
           data: clientData,
         });
 
-        response.ok(res, "Client successfully created", 201);
+        response.ok(res, "Client successfully created");
       }
     } else {
       response.error(res, "Invalid data send", 400);
@@ -41,8 +43,5 @@ export const createClient = async (req: Request, res: Response) => {
   }
 };
 
-router.post(
-  "/create-client",
-  middleware as express.RequestHandler,
-  createClient
-);
+
+
