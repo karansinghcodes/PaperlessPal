@@ -26,19 +26,22 @@ export const signIn = async (req: Request, res: Response) => {
             userExist.password
           );
           if (isPasswordCorrect) {
+
             const user = {
               userId: userExist.userId,
               email: userExist.email,
-              isUserVerified: userExist.isUserVerified,
               firstName: userExist.firstName,
               lastName: userExist.lastName,
             };
-            const token = jwt.sign(user, jwtSecret);
-
+            const token = jwt.sign(user.userId, jwtSecret);
             const resData = {
-              user,
-              token,
-            };
+              userId: userExist.userId,
+              email: userExist.email,
+              firstName: userExist.firstName,
+              lastName: userExist.lastName,
+              accessToken: token
+
+            }
             response.ok(res, "User successfully created", resData);
           } else {
             response.error(res, "Incorrect password");

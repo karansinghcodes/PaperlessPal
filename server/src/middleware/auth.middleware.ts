@@ -3,15 +3,6 @@ import { jwtSecret } from "../config/config";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { response } from "../utils/response/response";
 
-export interface RequestWithUser extends Request {
-  user: {
-    userId: string;
-    isUserVerified: boolean;
-    firstName: string;
-    lastName: string;
-    email: string;
-  };
-}
 
 export const middleware = async (
   req: Request,
@@ -28,10 +19,11 @@ export const middleware = async (
   try {
     const decoded = jwt.verify(token, jwtSecret);
 
-    const { userId, isUserVerified, firstName, lastName, email } =
+    const userId =
       decoded as JwtPayload;
 
-    req.params = { userId, isUserVerified, firstName, lastName, email };
+    req.params = userId;
+
     next();
   } catch (err: any) {
     console.log(err.message);

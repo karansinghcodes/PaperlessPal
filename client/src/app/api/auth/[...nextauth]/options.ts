@@ -22,15 +22,12 @@ export const authOptions: NextAuthOptions = {
             }),
           });
 
-          const resdata = await res.json();
-          if (resdata.success) {
-            const { user, token } = resdata.data;
+          const resData = await res.json();
+          if (resData.success) {
+            const user = resData.data;
 
-            return {
-              ...user,
-              accessToken: token,
-            };
-            return null;
+            return user;
+
           } else {
             return null;
           }
@@ -51,14 +48,13 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, user }) {
-   
+
       if (user) {
         token.accessToken = user.accessToken;
         token.userId = user.userId;
         token.email = user.email;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
-        token.isUserVerified = user.isUserVerified;
       }
 
       return token;
@@ -70,7 +66,6 @@ export const authOptions: NextAuthOptions = {
         email: token.email,
         firstName: token.firstName,
         lastName: token.lastName,
-        isUserVerified: token.isUserVerified,
       };
       session.accessToken = token.accessToken;
 

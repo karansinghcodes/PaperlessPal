@@ -2,7 +2,7 @@ import express from "express";
 import { signUp } from "../controller/authentication/signUp";
 import { signIn } from "../controller/authentication/signIn";
 import { verifyCode } from "../controller/authentication/verifyCode";
-import { createClient } from "../controller/client/create/createClient";
+import { createClient } from "../controller/client/add/createClient";
 import { middleware } from "../middleware/auth.middleware";
 import { createInvoice } from "../controller/invoice/create/createInvoice";
 

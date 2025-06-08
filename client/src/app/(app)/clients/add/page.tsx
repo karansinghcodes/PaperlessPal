@@ -21,15 +21,19 @@ import { Label } from "@/components/ui/label";
 import { clientSchema } from "@/schemas/clientSchema";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import z, { string } from "zod";
+import z from "zod";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { baseUrl } from "@/configs/config";
 import { toast } from "sonner";
+import { useRouter } from 'next/navigation'
 
 export default function () {
   const { data: session } = useSession();
   const token = session?.accessToken;
+
+  const router = useRouter();
+
 
   const countries = [
     { id: "india", value: "india", name: "India" },
@@ -96,10 +100,10 @@ export default function () {
       setLoading(true);
 
       const newData = JSON.parse(JSON.stringify(data));
-      data.address = generateAddress();
+      newData.address = generateAddress();
 
-      data.status = status === "active" ? true : false;
-      console.log(data);
+
+      newData.status = status === "active" ? true : false;
       const res = await fetch(`${baseUrl}create-client`, {
         method: "POST",
         body: JSON.stringify(newData),
@@ -113,6 +117,8 @@ export default function () {
 
       if (result.success) {
         toast.success(result.message);
+        router.push('/dasboard');
+
       } else {
         toast.error(result.message);
       }
@@ -128,7 +134,9 @@ export default function () {
       {/* header content */}
       <header className="h-14 bg-white border-b border-slate-200 flex justify-between items-center p-6">
         <div className="flex items-center gap-4">
-          <Button variant="ghost">
+          <Button variant="ghost" onClick={() => {
+            router.push("/clients");
+          }}>
             <ArrowLeft />
           </Button>
 
@@ -136,6 +144,7 @@ export default function () {
         </div>
         <Button
           className="bg-emerald-500 hover:bg-emerald-600 hover:text-white text-white"
+          onClick={handleSubmit(onSubmit)}
           disabled={loading}
         >
           <Save className="w-4 h-4 mr-2" />

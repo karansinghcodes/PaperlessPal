@@ -3,21 +3,19 @@ import { createClientSchema } from "../../../schemas/createClientSchema";
 import { response } from "../../../utils/response/response";
 import { PrismaClient } from "@prisma/client";
 
-import { middleware } from "../../../middleware/auth.middleware";
-import express from "express"
-import { router } from "../../../routes/routes";
-
-
 const prisma = new PrismaClient();
 
 export const createClient = async (req: Request, res: Response) => {
   try {
+
     const clientData = req.body;
-    const user = req.params;
+    const userId = req.params;
+    console.log(userId);
 
     const requestValidation = createClientSchema.safeParse(clientData);
 
     if (requestValidation.success) {
+      console.log(clientData);
       const clientExists = await prisma.client.findUnique({
         where: {
           email: clientData.email,
@@ -27,7 +25,7 @@ export const createClient = async (req: Request, res: Response) => {
       if (clientExists) {
         response.error(res, "Client already exists", 400);
       } else {
-        clientData.userId = user.userId;
+        clientData.userId = userId;
         await prisma.client.create({
           data: clientData,
         });

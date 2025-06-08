@@ -8,7 +8,6 @@ export async function middleware(request: NextRequest) {
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
   });
-  console.log(token)
   const url = request.nextUrl;
   if (token && url.pathname === "/") {
     return NextResponse.redirect(new URL("/dashboard", request.url));
