@@ -45,7 +45,7 @@ export const createInvoice = async (req: Request, res: Response) => {
       const subTotalAfterTax =
         (invoiceData.taxPercent * subTotal) / 100 + subTotal;
       const newUserId: string = userId.toString();
-      
+
       const newInvoice = {
         userId: newUserId,
         clientId: invoiceData.clientId,

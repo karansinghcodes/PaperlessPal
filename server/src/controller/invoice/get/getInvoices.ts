@@ -12,13 +12,31 @@ export const getInvoices = async (req: Request, res: Response) => {
         const userId = req.params;
 
         const invoices = await prisma.invoice.findMany({
-            where: {
-                userId: userId
-            }
+            where: { userId },
+            select: {
+                invoiceNumber: true,
+                subTotalAfterTax: true,
+                issueDate: true,
+                dueDate: true,
+                status: true,
+                client: {
+                    select: {
+                        companyName: true,
+                    },
+                },
+            },
         });
+        const updatedInvoices = invoices.map((invoice) => ({
+            invoiceNumber: invoice.invoiceNumber,
+            clientName: invoice.client.companyName,
+            amount: invoice.subTotalAfterTax,
+            IssueDate: invoice.issueDate,
+            DueDate: invoice.dueDate,
+            Status: invoice.status,
+        }));
 
         if (invoices) {
-            response.ok(res, "Invoices Fetched successfully", invoices);
+            response.ok(res, "Invoices Fetched successfully", updatedInvoices);
         }
         else {
             response.error(res, "No invoices found", 404);
