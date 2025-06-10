@@ -3,9 +3,6 @@ import { createInvoiceSchema } from "../../../schemas/createInvoiceSchema";
 import { PrismaClient } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 
-import { middleware } from "../../../middleware/auth.middleware";
-import express from "express"
-import { router } from "../../../routes/routes";
 
 const prisma = new PrismaClient();
 

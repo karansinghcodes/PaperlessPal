@@ -10,12 +10,11 @@ export const createClient = async (req: Request, res: Response) => {
 
     const clientData = req.body;
     const userId = req.params;
-    console.log(userId);
 
     const requestValidation = createClientSchema.safeParse(clientData);
 
     if (requestValidation.success) {
-      console.log(clientData);
+
       const clientExists = await prisma.client.findUnique({
         where: {
           email: clientData.email,

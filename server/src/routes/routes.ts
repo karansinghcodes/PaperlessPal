@@ -5,6 +5,7 @@ import { verifyCode } from "../controller/authentication/verifyCode";
 import { createClient } from "../controller/client/add/createClient";
 import { middleware } from "../middleware/auth.middleware";
 import { createInvoice } from "../controller/invoice/create/createInvoice";
+import { getClients } from "../controller/client/get/getClients";
 
 
 
@@ -21,6 +22,7 @@ router.post(
   middleware as express.RequestHandler,
   createClient
 );
+router.get("/get-clients",middleware as express.RequestHandler,getClients);
 
 //invoice
 router.post(

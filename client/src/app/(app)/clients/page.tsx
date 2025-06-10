@@ -19,6 +19,7 @@ import {
   Eye,
   FileText,
   Filter,
+  Loader,
   Mail,
   MoreHorizontal,
   Phone,
@@ -34,9 +35,71 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { baseUrl } from "@/configs/config";
+import LoadingIcon from "@/components/custom/Loader";
+import { useRouter } from "next/navigation";
+
+
+interface client {
+  clientId: string;
+  userId: string;
+  phoneNumber: string;
+  status: boolean;
+  email: string;
+  companyName: string;
+  contactName: string;
+  address: string;
+  addtitionalNotes: string;
+  invoiceCount: number;
+  totalBilledAmount: number;
+
+}
+
 
 export default function () {
-  const clientsData = [
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const [loading, setLoading] = useState<boolean>(false);
+  const token = session?.accessToken;
+  const [clientsData, setClientsData] = useState<client[]>([])
+
+
+
+
+  useEffect(() => {
+    const fetchClients = async () => {
+      if (status === "authenticated" && token) {
+        try {
+          setLoading(true);
+          const response = await fetch(`${baseUrl}get-clients`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          const data = await response.json();
+          console.log(data);
+          setClientsData(data.data);
+        } catch (error) {
+          console.error("Error fetching clients:", error);
+
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchClients();
+  }, [token]);
+
+
+
+
+  const clientData = [
     {
       id: "1",
       name: "Acme Inc.",
@@ -105,7 +168,12 @@ export default function () {
     },
   ];
 
+
+
+
   return (
+
+
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
       <div className="flex flex-col  w-full">
@@ -116,14 +184,17 @@ export default function () {
             <div className="flex justify-between">
               <h1 className="text-2xl font-bold">Clients</h1>
               <div className="flex gap-2">
-              <Button variant="outline"  className=" text-slate-700">
+                <Button variant="outline" className=" text-slate-700">
                   <Filter className="mr-2 h-4 w-4" />
                   Filter
                 </Button>
 
-                <Button className="bg-emerald-500 text-white w-33 flex items-center justify-between hover:bg-emerald-600">
+                <Button className="bg-emerald-500 text-white w-33 flex items-center justity-evenly hover:bg-emerald-600" onClick={() => {
+                  router.push("/clients/add");
+
+                }}>
                   <Plus />
-                  <span>New Invoice</span>
+                  <span>Add Client</span>
                 </Button>
               </div>
             </div>
@@ -140,108 +211,113 @@ export default function () {
               </Select>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
-              {clientsData.map((client) => (
-                <Card key={client.id} className="pt-0">
-                  <CardHeader className=" border-b  border-slate-200 bg-slate-50 ">
-                    <div className="flex items-center justify-between pt-2">
-                      <CardTitle className="text-lg font-semibold ">
-                        {client.name}
-                      </CardTitle>
-                      <Badge
-                        variant={
-                          client.status === "Active" ? "outline" : "secondary"
-                        }
-                        className={
-                          client.status === "Active"
-                            ? "bg-emerald-50 text-emerald-600 border-emerald-200"
-                            : "bg-slate-100 text-slate-500"
-                        }
-                      >
-                        {client.status}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex items-start gap-2">
-                        <Mail className="mt-0.5 h-4 w-4 text-slate-500" />
-                        <div>
-                          <p className="text-sm font-medium">{client.email}</p>
-                          <p className="text-xs text-slate-500">Email</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <Phone className="mt-0.5 h-4 w-4 text-slate-500" />
-                        <div>
-                          <p className="text-sm font-medium">{client.phone}</p>
-                          <p className="text-xs text-slate-500">Phone</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <Building className="mt-0.5 h-4 w-4 text-slate-500" />
-                        <div>
-                          <p className="text-sm font-medium">
-                            {client.address}
-                          </p>
-                          <p className="text-xs text-slate-500">Address</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <Users className="mt-0.5 h-4 w-4 text-slate-500" />
-                        <div>
-                          <p className="text-sm font-medium">
-                            {client.contactName}
-                          </p>
-                          <p className="text-xs text-slate-500">Contact Name</p>
-                        </div>
-                      </div>
-                      <div className="pt-2 flex justify-between items-center border-t border-slate-100 mt-3">
-                        <div>
-                          <p className="text-sm font-medium">
-                            {client.invoiceCount} Invoices
-                          </p>
-                          <p className="text-xs text-slate-500">
-                            ${client.totalBilled.toLocaleString()} Total Billed
-                          </p>
-                        </div>
+            {loading ? <div className="flex items-center justify-center mt-40"><Loader className="animate-spin w-12 h-12 text-emerald-300" /> </div> :
 
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Actions</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
-                              <Edit className="mr-2 h-4 w-4" />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <FileText className="mr-2 h-4 w-4" />
-                              View Invoices
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-rose-600">
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+              <div className="grid grid-cols-3 gap-4">
+                {clientsData.map((client) => (
+                  <Card key={client.clientId} className="pt-0">
+                    <CardHeader className=" border-b  border-slate-200 bg-slate-50 ">
+                      <div className="flex items-center justify-between pt-2">
+                        <CardTitle className="text-lg font-semibold ">
+                          {client.companyName}
+                        </CardTitle>
+                        <Badge
+                          variant={
+                            client.status ? "outline" : "secondary"
+                          }
+                          className={
+                            client.status
+                              ? "bg-emerald-50 text-emerald-600 border-emerald-200"
+                              : "bg-slate-100 text-slate-500"
+                          }
+                        >
+                          {client.status ? "Active" : "Inactive"}
+                        </Badge>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-2">
+                          <Mail className="mt-0.5 h-4 w-4 text-slate-500" />
+                          <div>
+                            <p className="text-sm font-medium">{client.email}</p>
+                            <p className="text-xs text-slate-500">Email</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <Phone className="mt-0.5 h-4 w-4 text-slate-500" />
+                          <div>
+                            <p className="text-sm font-medium">{client.phoneNumber}</p>
+                            <p className="text-xs text-slate-500">Phone</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <Building className="mt-0.5 h-4 w-4 text-slate-500" />
+                          <div>
+                            <p className="text-sm font-medium">
+                              {client.address}
+                            </p>
+                            <p className="text-xs text-slate-500">Address</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <Users className="mt-0.5 h-4 w-4 text-slate-500" />
+                          <div>
+                            <p className="text-sm font-medium">
+                              {client.contactName}
+                            </p>
+                            <p className="text-xs text-slate-500">Contact Name</p>
+                          </div>
+                        </div>
+                        <div className="pt-2 flex justify-between items-center border-t border-slate-100 mt-3">
+                          <div>
+                            <p className="text-sm font-medium">
+                              {client.invoiceCount} Invoices
+                            </p>
+                            <p className="text-xs text-slate-500">
+                              ${client.totalBilledAmount.toLocaleString()} Total Billed
+                            </p>
+                          </div>
+
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                              >
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Actions</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <FileText className="mr-2 h-4 w-4" />
+                                View Invoices
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem className="text-rose-600">
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            }
           </div>
         </main>
       </div>
     </div>
   );
 }
+
+

@@ -35,6 +35,8 @@ model Client {
   status          Boolean @default(true)
   phoneNumber     String?
   additionalNotes String?
+  invoiceCount      Int     @default(0)
+  totalBilledAmount Int     @default(0)
 
   user    User      @relation(fields: [userId], references: [userId])
   invoice Invoice[]
