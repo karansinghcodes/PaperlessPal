@@ -97,30 +97,32 @@ export default function () {
     data
   ) => {
     try {
-      setLoading(true);
+      if (token) {
+        setLoading(true);
 
-      const newData = JSON.parse(JSON.stringify(data));
-      newData.address = generateAddress();
+        const newData = JSON.parse(JSON.stringify(data));
+        newData.address = generateAddress();
 
 
-      newData.status = status === "active" ? true : false;
-      const res = await fetch(`${baseUrl}create-client`, {
-        method: "POST",
-        body: JSON.stringify(newData),
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-      });
+        newData.status = status === "active" ? true : false;
+        const res = await fetch(`${baseUrl}create-client`, {
+          method: "POST",
+          body: JSON.stringify(newData),
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+        });
 
-      const result = await res.json();
+        const result = await res.json();
 
-      if (result.success) {
-        toast.success(result.message);
-        router.push('/dasboard');
+        if (result.success) {
+          toast.success(result.message);
+          router.push('/dasboard');
 
-      } else {
-        toast.error(result.message);
+        } else {
+          toast.error(result.message);
+        }
       }
     } catch (error: any) {
       toast.error(error.message);

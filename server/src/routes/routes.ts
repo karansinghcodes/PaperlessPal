@@ -6,15 +6,16 @@ import { createClient } from "../controller/client/add/createClient";
 import { middleware } from "../middleware/auth.middleware";
 import { createInvoice } from "../controller/invoice/create/createInvoice";
 import { getClients } from "../controller/client/get/getClients";
+import { getInvoices } from "../controller/invoice/get/getInvoices";
 
 
 
 export const router = express.Router();
 
 //authentication
-router.post("/sign-up",signUp);
-router.post("/sign-in",signIn);
-router.post("/verify-code",verifyCode);
+router.post("/sign-up", signUp);
+router.post("/sign-in", signIn);
+router.post("/verify-code", verifyCode);
 
 //client
 router.post(
@@ -22,7 +23,7 @@ router.post(
   middleware as express.RequestHandler,
   createClient
 );
-router.get("/get-clients",middleware as express.RequestHandler,getClients);
+router.get("/get-clients", middleware as express.RequestHandler, getClients);
 
 //invoice
 router.post(
@@ -30,3 +31,4 @@ router.post(
   middleware as express.RequestHandler,
   createInvoice
 );
+router.get("/get-invoices", middleware as express.RequestHandler, getInvoices);

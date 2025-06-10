@@ -9,16 +9,17 @@ const prisma = new PrismaClient();
 export const createInvoice = async (req: Request, res: Response) => {
   try {
     const invoiceData = req.body;
-    const user = req.params;
+    const userId = req.params;
     invoiceData.issueDate = new Date(invoiceData.issueDate);
     invoiceData.dueDate = new Date(invoiceData.dueDate);
+
 
     const requestValidation = createInvoiceSchema.safeParse(invoiceData);
 
     if (requestValidation.success) {
       const invoiceCount = await prisma.invoice.count({
         where: {
-          userId: user.userId,
+          userId: userId,
         },
       });
 
@@ -43,9 +44,10 @@ export const createInvoice = async (req: Request, res: Response) => {
 
       const subTotalAfterTax =
         (invoiceData.taxPercent * subTotal) / 100 + subTotal;
-
+      const newUserId: string = userId.toString();
+      
       const newInvoice = {
-        userId: user.userId,
+        userId: newUserId,
         clientId: invoiceData.clientId,
         invoiceNumber: invoiceNumber,
         issueDate: invoiceData.issueDate,
@@ -55,9 +57,11 @@ export const createInvoice = async (req: Request, res: Response) => {
         subTotalAfterTax: subTotalAfterTax,
       };
 
+
       const invoice = await prisma.invoice.create({
-        data: newInvoice,
-      });
+        data: newInvoice
+      })
+
       const updatedItems = invoiceItems.map(
         (item: {
           name: string;
@@ -65,9 +69,7 @@ export const createInvoice = async (req: Request, res: Response) => {
           quantity: number;
           unitPrice: Decimal;
           totalPrice: Decimal;
-          taxPercent: Decimal;
-          subTotal: Decimal;
-          subTotalAfterTax: Decimal;
+
         }) => ({
           ...item,
           invoiceId: invoice.invoiceId,
@@ -77,6 +79,21 @@ export const createInvoice = async (req: Request, res: Response) => {
       await prisma.item.createMany({
         data: updatedItems,
       });
+
+      await prisma.client.update({
+        where: {
+          clientId: invoice.clientId
+        },
+        data: {
+          invoiceCount: {
+            increment: 1
+          },
+          totalBilledAmount: {
+            increment: subTotalAfterTax
+          }
+        }
+      })
+
 
       res.status(201).json({
         message: "Invoice successfully created",
