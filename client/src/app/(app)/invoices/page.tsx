@@ -1,6 +1,7 @@
 "use client";
 import Header from "@/components/custom/Header";
 import LoadingIcon from "@/components/custom/Loader";
+import Loader from "@/components/custom/mainLoader";
 import Sidebar from "@/components/custom/Sidebar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { baseUrl } from "@/configs/config";
+import clsx from "clsx";
 import { Download, Eye, Filter, MoreHorizontal, Plus, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -24,6 +26,7 @@ interface invoice {
     DueDate: string;
     Status: string;
 
+
 }
 
 
@@ -32,7 +35,7 @@ export default function Invoices() {
     const router = useRouter();
 
     const { data: session, status } = useSession();
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
     const token = session?.accessToken;
     const [invoices, setInvoices] = useState<invoice[]>([])
 
@@ -42,6 +45,7 @@ export default function Invoices() {
     const lastInvoiceIndex = currentPage * postPerPage;
     const firstInvoiceIndex = lastInvoiceIndex - postPerPage;
 
+    const [totalPages, setTotalPages] = useState<number>(0);
 
 
 
@@ -49,7 +53,7 @@ export default function Invoices() {
         const fetchClients = async () => {
             if (status === "authenticated" && token) {
                 try {
-                    setLoading(true);
+                    
                     const response = await fetch(`${baseUrl}get-invoices`, {
                         method: "GET",
                         headers: {
@@ -61,11 +65,15 @@ export default function Invoices() {
                     const data = await response.json();
 
                     setInvoices(data.data);
+                    setTotalPages(Math.ceil((data.data.length - 1) / postPerPage));
+
                 } catch (error) {
                     console.error("Error fetching clients:", error);
 
                 } finally {
                     setLoading(false);
+
+
                 }
             }
         };
@@ -74,7 +82,6 @@ export default function Invoices() {
     }, [token]);
 
     const currentInvoices = invoices.slice(firstInvoiceIndex, lastInvoiceIndex);
-    console.log(currentInvoices)
 
     return (
         <div className="flex min-h-screen bg-slate-50">
@@ -101,7 +108,7 @@ export default function Invoices() {
                             </div>
                         </div>
 
-                        {loading ? <div><LoadingIcon /></div> :
+                        {loading ? <div className="flex justify-center item-center mt-15"><Loader/></div> :
 
                             <Card>
                                 <CardHeader>
@@ -151,7 +158,7 @@ export default function Invoices() {
                                                             <div className="font-medium text-slate-900">{invoice.clientName}</div>
                                                         </td>
                                                         <td className="py-3">
-                                                            <div className="font-medium text-slate-900">{invoice.amount}</div>
+                                                            <div className="font-medium text-slate-900">₹ {invoice.amount}</div>
                                                         </td>
                                                         <td className="py-3 text-slate-500">{Intl.DateTimeFormat('en-US', {
                                                             year: 'numeric',
@@ -166,14 +173,15 @@ export default function Invoices() {
                                                         <td className="py-3">
                                                             <Badge
                                                                 variant="outline"
-                                                            // className={`bg-${invoice.statusColor}-50 text-${invoice.statusColor}-600 border-${invoice.statusColor}-200`}
+                                                                // className={`bg-${invoice.statusColor}-50 text-${invoice.statusColor}-600 border-${invoice.statusColor}-200`}
+                                                                className={clsx('badge', {})}
                                                             >
                                                                 {invoice.Status}
                                                             </Badge>
                                                         </td>
                                                         <td className="py-3 pr-4 text-right">
                                                             <DropdownMenu>
-                                                                <DropdownMenuTrigger>
+                                                                <DropdownMenuTrigger asChild>
                                                                     <Button variant="ghost" size="icon" className="h-8 w-8">
                                                                         <MoreHorizontal className="h-4 w-4" />
                                                                         <span className="sr-only">Actions</span>
@@ -214,7 +222,8 @@ export default function Invoices() {
                                             </Button>
                                             <Button variant="outline" size="sm" onClick={() => {
                                                 setCurrentPage(currentPage + 1);
-                                            }} >
+
+                                            }} disabled={currentPage >= totalPages} >
                                                 Next
                                             </Button>
                                         </div>

@@ -19,7 +19,7 @@ import {
   Eye,
   FileText,
   Filter,
-  Loader,
+
   Mail,
   MoreHorizontal,
   Phone,
@@ -38,8 +38,9 @@ import {
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { baseUrl } from "@/configs/config";
-import LoadingIcon from "@/components/custom/Loader";
+
 import { useRouter } from "next/navigation";
+import Loader from "@/components/custom/mainLoader";
 
 
 interface client {
@@ -61,7 +62,7 @@ interface client {
 export default function () {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const token = session?.accessToken;
   const [clientsData, setClientsData] = useState<client[]>([])
 
@@ -72,7 +73,7 @@ export default function () {
     const fetchClients = async () => {
       if (status === "authenticated" && token) {
         try {
-          setLoading(true);
+         
           const response = await fetch(`${baseUrl}get-clients`, {
             method: "GET",
             headers: {
@@ -211,7 +212,7 @@ export default function () {
               </Select>
             </div>
 
-            {loading ? <div className="flex items-center justify-center mt-40"><Loader className="animate-spin w-12 h-12 text-emerald-300" /> </div> :
+            {loading ? <div className="flex items-center justify-center mt-40"><Loader/> </div> :
 
               <div className="grid grid-cols-3 gap-4">
                 {clientsData.map((client) => (
