@@ -10,3 +10,4 @@ export const createInvoiceSchema = z.object({
   taxPercent: z.number(),
   invoiceItemsDetail: invoiceItemsDetail,
 });
+

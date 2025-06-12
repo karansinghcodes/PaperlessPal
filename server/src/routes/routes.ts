@@ -7,6 +7,7 @@ import { middleware } from "../middleware/auth.middleware";
 import { createInvoice } from "../controller/invoice/create/createInvoice";
 import { getClients } from "../controller/client/get/getClients";
 import { getInvoices } from "../controller/invoice/get/getInvoices";
+import { updateStatus } from "../controller/invoice/updateStatus/updateStatus";
 
 
 
@@ -32,3 +33,4 @@ router.post(
   createInvoice
 );
 router.get("/get-invoices", middleware as express.RequestHandler, getInvoices);
+router.put("/update-status", middleware as express.RequestHandler, updateStatus);

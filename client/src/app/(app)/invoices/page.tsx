@@ -53,7 +53,7 @@ export default function Invoices() {
         const fetchClients = async () => {
             if (status === "authenticated" && token) {
                 try {
-                    
+
                     const response = await fetch(`${baseUrl}get-invoices`, {
                         method: "GET",
                         headers: {
@@ -108,7 +108,7 @@ export default function Invoices() {
                             </div>
                         </div>
 
-                        {loading ? <div className="flex justify-center item-center mt-15"><Loader/></div> :
+                        {loading ? <div className="flex justify-center item-center mt-15"><Loader /></div> :
 
                             <Card>
                                 <CardHeader>
@@ -173,8 +173,14 @@ export default function Invoices() {
                                                         <td className="py-3">
                                                             <Badge
                                                                 variant="outline"
-                                                                // className={`bg-${invoice.statusColor}-50 text-${invoice.statusColor}-600 border-${invoice.statusColor}-200`}
-                                                                className={clsx('badge', {})}
+                                                                className={clsx(
+
+                                                                    {
+                                                                        "bg-emerald-50 text-emerald-600 border-emerald-200": invoice.Status === "paid",
+                                                                        "bg-rose-50 text-rose-600 border-rose-200": invoice.Status === "overDue",
+                                                                        "bg-amber-50 text-amber-600 border-amber-200": invoice.Status === "pending",
+                                                                    }
+                                                                )}
                                                             >
                                                                 {invoice.Status}
                                                             </Badge>

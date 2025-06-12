@@ -53,6 +53,7 @@ model Invoice {
   taxPercent       Decimal
   subTotal         Decimal
   subTotalAfterTax Decimal
+  createdAt        DateTime @default(now())
 
   user   User   @relation(fields: [userId], references: [userId])
   client Client @relation(fields: [clientId], references: [clientId])
