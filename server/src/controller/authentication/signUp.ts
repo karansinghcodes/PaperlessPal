@@ -7,7 +7,6 @@ import { response } from "../../utils/response/response";
 
 
 
-
 const prisma = new PrismaClient();
 
 export const signUp = async (req: Request, res: Response) => {

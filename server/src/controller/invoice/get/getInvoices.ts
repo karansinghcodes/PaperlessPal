@@ -14,6 +14,7 @@ export const getInvoices = async (req: Request, res: Response) => {
         const invoices = await prisma.invoice.findMany({
             where: { userId },
             select: {
+                invoiceId: true,
                 invoiceNumber: true,
                 subTotalAfterTax: true,
                 issueDate: true,
@@ -27,6 +28,7 @@ export const getInvoices = async (req: Request, res: Response) => {
             },
         });
         const updatedInvoices = invoices.map((invoice) => ({
+            invoiceId: invoice.invoiceId,
             invoiceNumber: invoice.invoiceNumber,
             clientName: invoice.client.companyName,
             amount: invoice.subTotalAfterTax,

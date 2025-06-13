@@ -33,4 +33,4 @@ router.post(
   createInvoice
 );
 router.get("/get-invoices", middleware as express.RequestHandler, getInvoices);
-router.put("/update-status", middleware as express.RequestHandler, updateStatus);
+router.put("/update-status/:invoiceId", middleware as express.RequestHandler, updateStatus);

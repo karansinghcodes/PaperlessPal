@@ -1,46 +1,38 @@
-import { Request, Response } from "express"
-import { PrismaClient } from "@prisma/client"
+import { Request, Response } from "express";
+import { PrismaClient } from "@prisma/client";
 import { response } from "../../../utils/response/response";
 
 const prisma = new PrismaClient();
 
 export const updateStatus = async (req: Request, res: Response) => {
-
     try {
         const userId = req.params;
-        const invoiceId = req.query.id;
+        const invoiceId = req.params;
+        const newInvoiceId = invoiceId.toString();
+      
 
-        const stringifiedInvoiceId = invoiceId?.toString();
 
-        if (stringifiedInvoiceId) {
-            const updatedInvoice = await prisma.invoice.update({
-                where: {
-                    invoiceId: stringifiedInvoiceId,
-                    userId
-                },
-                data: {
-                    status: "paid"
-
-                }
-
-            })
-            if (updatedInvoice) {
-                response.ok(res, "status updated successfully");
-
-            }
-            else {
-                response.error(res, "failed to update invoice status");
-            }
-
+        if (!userId || !invoiceId) {
+            response.error(res, "Missing userId or invoiceNumber in parameters");
         }
 
+        const updatedInvoice = await prisma.invoice.update({
+            where: {
 
+                invoiceId: newInvoiceId
+            },
+            data: {
+                status: "paid"
+            }
+        });
+
+        if (updatedInvoice) {
+            response.ok(res, "Status updated successfully");
+        } else {
+            response.error(res, "Failed to update invoice status");
+        }
     } catch (error: any) {
-        console.error("error updateing invoice status", error.message);
-        response.error(res, "Internal server error",);
-
+        console.error("Error updating invoice status:", error.message);
+        response.error(res, "Internal server error");
     }
-
-
-
-}
+};
